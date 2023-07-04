@@ -25,6 +25,8 @@
         <org.mockito.version>2.28.2</org.mockito.version>
         <spring.log4j2.starter.version>2.1.7.RELEASE</spring.log4j2.starter.version>
         <com.google.guava.version>27.0.1-jre</com.google.guava.version>
+        <sonar.organization>rayaladeliras-sh</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <modules>
