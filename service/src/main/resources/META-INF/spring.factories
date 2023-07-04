@@ -1,0 +1,2 @@
+org.springframework.boot.env.EnvironmentPostProcessor=\
+com.stubhub.identity.token.service.config.CloudSpannerEnvironmentPostProcessor

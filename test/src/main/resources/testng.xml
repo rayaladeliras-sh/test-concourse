@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
+<suite name="all-tests">
+    <test name="java-classes" thread-count="1">
+        <packages>
+            <package name="com.stubhub.identity.token.test.integration" />
+        </packages>
+    </test>
+</suite>

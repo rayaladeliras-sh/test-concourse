@@ -1,0 +1,776 @@
+{
+	"info": {
+		"_postman_id": "e373d61c-5b97-45a3-86bc-7f76c82ccaaa",
+		"name": "Identity.Token-mgt",
+		"description": "# About this collection\n\nNotice that this collection stores the catalog of endpoints exposed in the repository, but not all of them are currently working (Check token, User Information...)\n\n# Authentication:\n\n## Basic Auth\n\nThe very first step is to obtain a token from Identity. To do this you'll find a request named _Generate token_ under _SpringBoot Oauth2 Server_ folder. To make this request work you'll need a user and a password (Ask to the Identity team how can you obtain them). On the Headers Authorization field type `Basic user:password` (the `user:password` string must be base 64 encoded)\n\nThis auth corresponds with the environment variable named = {{BASIC_AUTH_IDENTITY}}\n\n## Bearer\n\nAfter the first step you'll obtain a Bearer. This Bearer can be used for the rest of requests inside Identity.Token-mgt.postman_collection.  \nThis Bearer will go in the environment variable named = {{GENERATED_INDENTITY_BEARER}}\n\n# Use cases\n\n## Admin\n\n**Cloud**\n\n\\* createCloudClient -> **Register client**  \n\\* deleteCloudClient -> **Delete client**  \n\\* queryCloudClient -> **Get clients** and filter results  \n\\* updateCloudClient -> **Update active client**\n\n**Shape**\n\n\\* createShapeClient -> not working due to an exception related to the date parsing  \n\\* deleteShapeClient -> not working due to an exception related to the date parsing  \n\\* queryShapeClient -> not working due to an exception related to the date parsing  \n\\* updateShapeClient -> not working due to an exception related to the date parsing\n\n## Client (only cloud)\n\n\\* createCloudClient -> **Register client default**  \n\\* queryCloudClient -> **Get clients** and filter results  \n\\* updateCloudClient -> **Update active client**\n\n## Sync-client\n\n\\* syncCloudAppToShape -> not supported directly with one request but possible to do it through **Exchange Token** and **Revoke Refresh Token**  \n\\* syncShapeAppToCloud -> not supported directly with one request but possible to do it through **Exchange Token** and **Revoke Refresh Token**",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4580125"
+	},
+	"item": [
+		{
+			"name": "SpringBoot Oauth2 Server",
+			"item": [
+				{
+					"name": "Generate Token",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{BASIC_AUTH_IDENTITY}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{STUBHUB_API_HOST}}/oauth/v1/token?grant_type=client_credentials",
+							"protocol": "https",
+							"host": [
+								"{{STUBHUB_API_HOST}}"
+							],
+							"path": [
+								"oauth",
+								"v1",
+								"token"
+							],
+							"query": [
+								{
+									"key": "grant_type",
+									"value": "client_credentials"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check Token",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*"
+							},
+							{
+								"key": "Accept-Encoding",
+								"value": "gzip, deflate"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{BASIC_AUTH_IDENTITY}}"
+							},
+							{
+								"key": "Cache-Control",
+								"value": "no-cache"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Content-Length",
+								"value": "0"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "cache-control",
+								"value": "no-cache"
+							}
+						],
+						"url": {
+							"raw": "https://{{STUBHUB_API_HOST}}/oauth/v1/check_token?token={{IDENTITY_OAUTH_TOKEN}}",
+							"protocol": "https",
+							"host": [
+								"{{STUBHUB_API_HOST}}"
+							],
+							"path": [
+								"oauth",
+								"v1",
+								"check_token"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{IDENTITY_OAUTH_TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Token Public Key",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{BASIC_AUTH_IDENTITY}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{STUBHUB_API_HOST}}/oauth/v1/token_key",
+							"protocol": "https",
+							"host": [
+								"{{STUBHUB_API_HOST}}"
+							],
+							"path": [
+								"oauth",
+								"v1",
+								"token_key"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ClientRegistration",
+			"item": [
+				{
+					"name": "Update active client",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{GENERATED_IDENTITY_BEARER}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accessTokenValiditySeconds\": 31536000,\n  \"additionalInformation\": \"\",\n  \"authorities\": [\n  ],\n  \"authorizedGrantTypes\": [],\n  \"autoApprove\": [\"true\"],\n  \"clientId\": \"<CLIENT_ID>\",\n  \"clientName\": \"<CLIENT_NAME>\",\n  \"clientOwner\": \"<MY_USER>@stubhubinternational.com\",\n  \"createdBy\": \"DL-SH-INTL-CE-DEV@stubhubinternational.com\",\n  \"lastUpdateBy\": \"DL-SH-INTL-CE-DEV@stubhubinternational.com\",\n  \"refreshTokenValiditySeconds\": 0,\n  \"registeredRedirectUri\": [\n  ],\n  \"resourceIds\": [\n  ],\n  \"scope\": [\n    \"default\", \"openid\"\n  ],\n  \"status\": \"ACTIVE\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{STUBHUB_API_HOST}}/oauth/v1/clients",
+							"protocol": "https",
+							"host": [
+								"{{STUBHUB_API_HOST}}"
+							],
+							"path": [
+								"oauth",
+								"v1",
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register client",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*"
+							},
+							{
+								"key": "Accept-Encoding",
+								"value": "gzip, deflate"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{GENERATED_IDENTITY_BEARER}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accessTokenValiditySeconds\": 31536000,\n  \"additionalInformation\": \"\",\n  \"authorities\": [],\n  \"authorizedGrantTypes\": [],\n  \"autoApprove\": [\"true\"],\n  \"clientId\": \"<CLIENT_ID>\",\n  \"clientName\": \"<CLIENT_NAME>\",\n  \"clientOwner\": \"<MY_USER>@stubhubinternational.com\",\n  \"clientSecret\": \"<CLIENT_SECRET>\",\n  \"createdBy\": \"DL-SH-INTL-CE-DEV@stubhubinternational.com\",\n  \"lastUpdateBy\": \"DL-SH-INTL-CE-DEV@stubhubinternational.com\",\n  \"refreshTokenValiditySeconds\": 0,\n  \"registeredRedirectUri\": [],\n  \"resourceIds\": [],\n  \"scope\": [\"default\", \"openid\"],\n  \"status\": \"ACTIVE\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{STUBHUB_API_HOST}}/oauth/v1/clients",
+							"protocol": "https",
+							"host": [
+								"{{STUBHUB_API_HOST}}"
+							],
+							"path": [
+								"oauth",
+								"v1",
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register client default",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*"
+							},
+							{
+								"key": "Accept-Encoding",
+								"value": "gzip, deflate"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{GENERATED_IDENTITY_BEARER}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accessTokenValiditySeconds\": 31536000,\n  \"additionalInformation\": \"\",\n  \"authorities\": [\n  ],\n  \"authorizedGrantTypes\": [],\n  \"autoApprove\": [\"true\"],\n  \"clientId\": \"<CLIENT_ID>\",\n  \"clientName\": \"<CLIENT_NAME>\",\n  \"clientOwner\": \"<MY_USER>@stubhubinternational.com\",\n  \"clientSecret\": \"<CLIENT_SECRET>\",\n  \"createdBy\": \"DL-SH-INTL-CE-DEV@stubhubinternational.com\",\n  \"lastUpdateBy\": \"DL-SH-INTL-CE-DEV@stubhubinternational.com\",\n  \"refreshTokenValiditySeconds\": 0,\n  \"registeredRedirectUri\": [],\n  \"resourceIds\": [],\n  \"scope\": [\"default\", \"openid\"],\n  \"status\": \"ACTIVE\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{STUBHUB_API_HOST}}/oauth/v1/clients/default",
+							"protocol": "https",
+							"host": [
+								"{{STUBHUB_API_HOST}}"
+							],
+							"path": [
+								"oauth",
+								"v1",
+								"clients",
+								"default"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete client",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{GENERATED_IDENTITY_BEARER}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{STUBHUB_API_HOST}}/oauth/v1/clients/{{IDENTITY_CLIENT_ID}}",
+							"protocol": "https",
+							"host": [
+								"{{STUBHUB_API_HOST}}"
+							],
+							"path": [
+								"oauth",
+								"v1",
+								"clients",
+								"{{IDENTITY_CLIENT_ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get client info by Id",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{GENERATED_IDENTITY_BEARER}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{STUBHUB_API_HOST}}/oauth/v1/clients/{{IDENTITY_CLIENT_ID}}",
+							"protocol": "https",
+							"host": [
+								"{{STUBHUB_API_HOST}}"
+							],
+							"path": [
+								"oauth",
+								"v1",
+								"clients",
+								"{{IDENTITY_CLIENT_ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get clients",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{GENERATED_IDENTITY_BEARER}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{STUBHUB_API_HOST}}/oauth/v1/clients/",
+							"protocol": "https",
+							"host": [
+								"{{STUBHUB_API_HOST}}"
+							],
+							"path": [
+								"oauth",
+								"v1",
+								"clients",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get self client information",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{GENERATED_IDENTITY_BEARER}}"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{STUBHUB_API_HOST}}/oauth/v1/clients/self",
+							"protocol": "https",
+							"host": [
+								"{{STUBHUB_API_HOST}}"
+							],
+							"path": [
+								"oauth",
+								"v1",
+								"clients",
+								"self"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update self client information",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{GENERATED_IDENTITY_BEARER}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accessTokenValiditySeconds\": 31536000,\n  \"additionalInformation\": \"\",\n  \"authorities\": [\n  ],\n  \"authorizedGrantTypes\": [],\n  \"autoApprove\": [\"true\"],\n  \"clientId\": \"<CLIENT_ID>\",\n  \"clientName\": \"<CLIENT_NAME>\",\n  \"clientOwner\": \"<MY_USER>@stubhubinternational.com\",\n  \"clientSecret\": \"<CLIENT_SECRET>\",\n  \"createdBy\": \"DL-SH-INTL-CE-DEV@stubhubinternational.com\",\n  \"lastUpdateBy\": \"DL-SH-INTL-CE-DEV@stubhubinternational.com\",\n  \"refreshTokenValiditySeconds\": 0,\n  \"registeredRedirectUri\": [],\n  \"resourceIds\": [],\n  \"scope\": [\"default\", \"openid\"],\n  \"status\": \"ACTIVE\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{STUBHUB_API_HOST}}/oauth/v1/clients/self",
+							"protocol": "https",
+							"host": [
+								"{{STUBHUB_API_HOST}}"
+							],
+							"path": [
+								"oauth",
+								"v1",
+								"clients",
+								"self"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset client secret",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{GENERATED_IDENTITY_BEARER}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"oldSecret\": \"\",\n    \"newSecret\": \"\"\n}"
+						},
+						"url": {
+							"raw": "https://{{STUBHUB_API_HOST}}/oauth/v1/clients/{{IDENTITY_CLIENT_ID}}/secret",
+							"protocol": "https",
+							"host": [
+								"{{STUBHUB_API_HOST}}"
+							],
+							"path": [
+								"oauth",
+								"v1",
+								"clients",
+								"{{IDENTITY_CLIENT_ID}}",
+								"secret"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Hello",
+			"item": [
+				{
+					"name": "Is authenticated",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{GENERATED_IDENTITY_BEARER}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{STUBHUB_API_HOST}}/oauth/root",
+							"protocol": "https",
+							"host": [
+								"{{STUBHUB_API_HOST}}"
+							],
+							"path": [
+								"oauth",
+								"root"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "WellKnown",
+			"item": [
+				{
+					"name": "Get Oauth2 public keys",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{STUBHUB_API_HOST}}/oauth/v1/.well-known/jwks.json",
+							"protocol": "https",
+							"host": [
+								"{{STUBHUB_API_HOST}}"
+							],
+							"path": [
+								"oauth",
+								"v1",
+								".well-known",
+								"jwks.json"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login Controller",
+			"item": [
+				{
+					"name": "Log In",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{STUBHUB_API_HOST}}/oauth/login",
+							"protocol": "https",
+							"host": [
+								"{{STUBHUB_API_HOST}}"
+							],
+							"path": [
+								"oauth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "IdentityToken",
+			"item": [
+				{
+					"name": "Generate User Token",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{GENERATED_IDENTITY_BEARER}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"clientId\": \"<CLIENT_ID>\",\n    \"guid\": \"<USER_GUID>\",\n    \"email\": \"<USER_EMAIL>\"\n}\n"
+						},
+						"url": {
+							"raw": "https://{{STUBHUB_API_HOST}}/oauth/v1/inner/token",
+							"protocol": "https",
+							"host": [
+								"{{STUBHUB_API_HOST}}"
+							],
+							"path": [
+								"oauth",
+								"v1",
+								"inner",
+								"token"
+							]
+						},
+						"description": "Requires that the CLIENT has a `password` at the `AUTHORIZED_GRANT_TYPES` column in token-mgt-db.OAUTH_CLIENT_DETAILS table."
+					},
+					"response": []
+				},
+				{
+					"name": "Generate User Token With Act Information",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{GENERATED_IDENTITY_BEARER}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"clientId\": \"<CLIENT_ID>\",\n    \"guid\": \"<USER_GUID>\",\n    \"email\": \"<USER_EMAIL>\",\n    \"act\": {\n        \"client_id\": \"<ACT_CLIENT_ID>\",\n        \"client_name\": \"<ACT_CLIENT_NAME>\",\n        \"roles\": [\"default\", \"openid\"]\n    }\n}\n"
+						},
+						"url": {
+							"raw": "https://{{STUBHUB_API_HOST}}/oauth/v1/inner/token",
+							"protocol": "https",
+							"host": [
+								"{{STUBHUB_API_HOST}}"
+							],
+							"path": [
+								"oauth",
+								"v1",
+								"inner",
+								"token"
+							]
+						},
+						"description": "Requires that the CLIENT has a `password` at the `AUTHORIZED_GRANT_TYPES` column in token-mgt-db.OAUTH_CLIENT_DETAILS table."
+					},
+					"response": []
+				},
+				{
+					"name": "Exchange Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cookie\": \"\",\n    \"token\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{STUBHUB_API_HOST}}/oauth/v1/inner/extoken",
+							"protocol": "https",
+							"host": [
+								"{{STUBHUB_API_HOST}}"
+							],
+							"path": [
+								"oauth",
+								"v1",
+								"inner",
+								"extoken"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Revoke Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "default"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{BASIC_AUTH_IDENTITY}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "https://{{STUBHUB_API_HOST}}/oauth/v1/inner/token/revoke?token={{IDENTITY_OAUTH_TOKEN}}",
+							"protocol": "https",
+							"host": [
+								"{{STUBHUB_API_HOST}}"
+							],
+							"path": [
+								"oauth",
+								"v1",
+								"inner",
+								"token",
+								"revoke"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{IDENTITY_OAUTH_TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "(Deprecated) Get Oauth2 Keys",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{STUBHUB_API_HOST}}/oauth/v1/inner/jwks.json",
+							"protocol": "https",
+							"host": [
+								"{{STUBHUB_API_HOST}}"
+							],
+							"path": [
+								"oauth",
+								"v1",
+								"inner",
+								"jwks.json"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "User Name",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{GENERATED_IDENTITY_BEARER}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "https://{{STUBHUB_API_HOST}}/oauth/v1/user/me",
+							"protocol": "https",
+							"host": [
+								"{{STUBHUB_API_HOST}}"
+							],
+							"path": [
+								"oauth",
+								"v1",
+								"user",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User Information",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{GENERATED_IDENTITY_BEARER}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "https://{{STUBHUB_API_HOST}}/oauth/v1/userinfo",
+							"protocol": "https",
+							"host": [
+								"{{STUBHUB_API_HOST}}"
+							],
+							"path": [
+								"oauth",
+								"v1",
+								"userinfo"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

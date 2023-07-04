@@ -1,0 +1,25 @@
+env: stubclouddev
+
+gcp-project: identity-dev-40077
+
+spring:
+  cloud:
+    gcp:
+      spanner:
+        project-id: spanner-dev-54631
+        instance-id: spanner-dev
+        database: token-mgt-db
+
+token.management.base.url: https://token-mgt-dot-${gcp-project}.appspot.com
+customer.identity.base.url: https://customer-identity-dot-${gcp-project}.appspot.com
+
+server:
+  tomcat:
+    protocol-header: x-forwarded-proto
+
+
+gcp:
+  cloud-storage:
+    client:
+      bucket: identity-dev-40077.appspot.com
+      object: client/clientMapping

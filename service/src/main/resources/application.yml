@@ -1,0 +1,108 @@
+env:
+
+server:
+  servlet:
+    context-path: /identity
+    session:
+      cookie:
+        name: TOKEN_MGT_SESSION
+        legacy: SH_SI
+        domain: ${site.domain}
+        path: /
+  error:
+    include-stacktrace: on-trace-param
+    include-exception: false
+#  tomcat:
+#    max-threads: 200
+#    accept-count: 1000
+#    min-spare-threads: 20
+
+spring:
+  cloud:
+    gcp:
+      spanner:
+        database: token-mgt-db
+#        numRpcChannels: 200
+#        minSessions: 50
+#        maxSessions: 200
+#        maxIdleSessions: 20
+#        keepAliveIntervalMinutes: 30
+#        prefetchChunks: 4
+  cache:
+    caffeine:
+      user:
+        max-size: 200
+        expire-time: 30
+      client:
+        max-size: 100
+        expire-time: 60
+      session:
+        legacy:
+          max-size: 200
+          expire-time: 60
+#        cloud:
+#          max-size: 100
+#          expire-time: 600
+  session:
+    store-type: none
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+
+stubhub.gateway.url: https://api-shape.${env}.com
+stubhub.team.email: 'DL-Team-PostPurchase-Dev@stubhubinternational.com'
+token.management.base.url: https://api-pcf.${env}.com
+customer.identity.base.url: https://api-pcf.${env}.com
+audit.log.base.url: https://identity-audit-dot-${gcp-project}.uc.r.appspot.com
+session.mgt.base.url: https://session-mgt-dot-${gcp-project}.uc.r.appspot.com
+
+site.domain: ${env}.com
+site.home.page: https://www.${site.domain}
+speedy.central.login.url: ${site.home.page}/login
+
+remote.api.customer.identity.v1.endpoint: ${customer.identity.base.url}/identity/customer/query
+remote.api.token.endpoint:  ${stubhub.gateway.url}/oauth/token
+remote.api.token.validation.v2.endpoint: ${stubhub.gateway.url}/oauth/validatetoken/v2
+remote.api.iam.endpoint: https://api-shape.${env}.com/iam
+remote.api.audit.endpoint: ${audit.log.base.url}/identity/audit/v1
+remote.api.session.mgt.endpoint: ${session.mgt.base.url}/identity/session
+
+CLIENT_ID_TOKEN_MGT:
+CLIENT_SECRET_TOKEN_MGT:
+
+#client id of token management service
+security:
+  oauth2:
+    client:
+      clientId: ${CLIENT_ID_TOKEN_MGT}
+      clientSecret: ${CLIENT_SECRET_TOKEN_MGT}
+      accessTokenUri: ${token.management.base.url}/identity/oauth/v1/token
+
+session:
+  task:
+    clear:
+      fixedRate: 86400000
+  max:
+    inactive:
+      interval: 86400
+
+refresh-token:
+  task:
+    clear:
+      fixedRate: 7200000 #2 hours
+
+code:
+  task:
+    clear:
+      fixedRate: 86400000 #1 day in millisecond
+  max:
+    inactive:
+      interval: 86400 #1 day in second
+
+mode:
+  test: false
